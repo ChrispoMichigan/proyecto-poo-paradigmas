@@ -1,12 +1,10 @@
 
+from db import BaseDeDatos
+
 class ModelUsers():
     @staticmethod
     async def get_all():
-        return {
-            "status": True,
-            "id": 1,
-            "username": "Juan"
-        }
+        return await BaseDeDatos.query("SELECT id, username, created_at FROM users")
     
     @staticmethod
     async def get_by_id():

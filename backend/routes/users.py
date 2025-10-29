@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from backend.models.users import ModelUsers
+from models.users import ModelUsers
 
 users_router = APIRouter()
 

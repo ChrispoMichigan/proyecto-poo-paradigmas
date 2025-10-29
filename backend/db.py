@@ -23,8 +23,8 @@ class BaseDeDatos():
             port=port,
             database=database
         )
-    
-    def query(query:str):
+    @staticmethod
+    async def query(query:str):
         try:
             conexion = BaseDeDatos.conexion()
             cursor = conexion.cursor(dictionary=True)
