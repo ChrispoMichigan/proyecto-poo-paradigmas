@@ -12,11 +12,17 @@ class ModelUsers():
     
     @staticmethod
     async def get_by_id(id: int):
-        return {
-            "status": True,
-            "id": 1,
-            "username": "Juan"
-        }
+        data = await BaseDeDatos.query(f"SELECT id, username, created_at FROM users WHERE id = {id}")
+        
+        if not data['status']:
+            return data
+        
+        if len(data['data']) == 0:
+            data['mensaje'] = f'Usuario con el id {id} no encontrado'
+            return data
+
+        data['mensaje'] = f'Usuario encontrado con el id {id}'
+        return data
     @staticmethod
     async def create():
         return {

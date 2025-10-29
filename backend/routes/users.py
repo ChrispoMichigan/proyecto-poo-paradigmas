@@ -8,3 +8,8 @@ users_router = APIRouter()
 async def get_users():
     users = await ModelUsers.get_all()
     return users
+
+@users_router.get("/{id}")
+async def get_by_id(id: int):
+    user = await ModelUsers.get_by_id(id)
+    return user
