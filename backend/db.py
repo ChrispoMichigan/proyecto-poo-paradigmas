@@ -12,7 +12,7 @@ class BaseDeDatos():
         host = os.getenv("DB_HOST", "localhost")
         port = int(os.getenv("DB_PORT", "3306"))
         database = os.getenv("DB_NAME")
-        print(user)
+        
         if not all([user, password, database]):
             raise RuntimeError("Faltan variables de entorno: DB_USER, DB_PASSWORD o DB_NAME")
 

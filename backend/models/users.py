@@ -4,10 +4,14 @@ from db import BaseDeDatos
 class ModelUsers():
     @staticmethod
     async def get_all():
-        return await BaseDeDatos.query("SELECT id, username, created_at FROM users")
+        data = await BaseDeDatos.query("SELECT id, username, created_at FROM users")
+        if not data['status']:
+            return data
+        data['mensaje'] = f'Se encontraron {len(data['data'])} usuarios'
+        return data
     
     @staticmethod
-    async def get_by_id():
+    async def get_by_id(id: int):
         return {
             "status": True,
             "id": 1,
