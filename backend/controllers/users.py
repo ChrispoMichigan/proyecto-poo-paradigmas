@@ -66,3 +66,26 @@ class ControllerUsers():
         user_create = await ModelUsers.get_by_id(data['data']['last_insert_id'])
         user_create['mensaje'] = 'Usuario creado correctamente'
         return user_create
+    
+    
+    @staticmethod
+    async def login(user_data: dict):
+        found_user = await ModelUsers.get_by_username(user_data['username'])
+        
+        if len(found_user['data']) == 0:
+            return {
+                "status": False,
+                "data": None,
+                "mensaje": "Usuario no encontrado"
+            }
+        
+        if found_user['data'][0]['password'] != user_data['password']:
+            return {
+                "status": False,
+                "data": None,
+                "mensaje": "Contraseña incorrecta"
+            }
+        
+        found_user['data'][0].pop('password')
+
+        return found_user

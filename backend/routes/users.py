@@ -23,3 +23,8 @@ async def delete_by_id(id: int):
 async def create(user_data: dict):
     data = await ControllerUsers.create(user_data)
     return data
+
+@users_router.post("/login")
+async def login(user_data: dict):
+    data = await ControllerUsers.login(user_data)
+    return data

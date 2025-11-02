@@ -19,7 +19,7 @@ class ModelUsers():
     @staticmethod
     async def get_by_id(id: int):
         try:
-            data = await BaseDeDatos.query("SELECT id, username, created_at FROM users WHERE id = ?", (id,))
+            data = await BaseDeDatos.query("SELECT id, username, password, created_at FROM users WHERE id = ?", (id,))
             return data
         except Exception as e:
             return {
@@ -56,7 +56,7 @@ class ModelUsers():
     @staticmethod
     async def get_by_username(username: str):
         try:
-            user = await BaseDeDatos.query('SELECT username FROM users WHERE username = ?', (username,))
+            user = await BaseDeDatos.query('SELECT id, username, password FROM users WHERE username = ?', (username,))
             return user
         except Exception as e:
             return {
