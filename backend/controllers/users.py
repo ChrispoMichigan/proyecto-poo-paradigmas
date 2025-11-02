@@ -11,7 +11,6 @@ class ControllerUsers():
     
     @staticmethod
     async def get_by_id(id: int):
-
         data = await ModelUsers.get_by_id(id)
         
         if not data['status']:
@@ -38,7 +37,6 @@ class ControllerUsers():
 
     @staticmethod
     async def create(user_data: dict):
-        
         if not 'username' in user_data.keys():
             return {
                 "status": False,

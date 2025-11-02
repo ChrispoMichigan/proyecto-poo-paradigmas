@@ -61,6 +61,8 @@ class BaseDeDatos():
             }
             
         except Exception as e:
+            if conexion:
+                conexion.close()
             return {
                 "status": False,
                 "data": None,
