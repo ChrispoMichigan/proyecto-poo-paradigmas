@@ -16,5 +16,10 @@ async def get_by_id(id: int):
 
 @users_router.delete("/{id}")
 async def delete_by_id(id: int):
-    user = await ModelUsers.delete_by_id(id)
-    return user
+    data = await ModelUsers.delete_by_id(id)
+    return data
+
+@users_router.post("/")
+async def create(user_data: dict):
+    data = await ModelUsers.create(user_data)
+    return data
