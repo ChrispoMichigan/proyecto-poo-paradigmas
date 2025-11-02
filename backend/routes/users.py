@@ -13,3 +13,8 @@ async def get_users():
 async def get_by_id(id: int):
     user = await ModelUsers.get_by_id(id)
     return user
+
+@users_router.delete("/{id}")
+async def delete_by_id(id: int):
+    user = await ModelUsers.delete_by_id(id)
+    return user

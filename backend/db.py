@@ -24,12 +24,22 @@ class BaseDeDatos():
             database=database
         )
     @staticmethod
-    async def query(query:str):
+    async def query(query: str):
         try:
             conexion = BaseDeDatos.conexion()
-            cursor = conexion.cursor(dictionary=True)
-            cursor.execute(query)
-            data = cursor.fetchall()
+            
+            # Verificar si es un query que devuelve datos (SELECT) o no (INSERT, UPDATE, DELETE)
+            if query.strip().upper().startswith('SELECT'):
+                cursor = conexion.cursor(dictionary=True)  # Para SELECT usar dictionary=True
+                cursor.execute(query)
+                data = cursor.fetchall()
+            else:
+                cursor = conexion.cursor(buffered=True)  # Para INSERT/UPDATE/DELETE usar cursor bufferizado
+                cursor.execute(query)
+                conexion.commit()
+                print(f"Filas afectadas: {cursor.rowcount}")
+                data = {"rows_affected": cursor.rowcount}
+            
             return {
                 "status": True,
                 "data": data
