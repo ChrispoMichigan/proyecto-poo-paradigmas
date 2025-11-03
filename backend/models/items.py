@@ -48,3 +48,15 @@ class ModelItems():
                 "data": None,
                 "mensaje": f"Error: {str(e)}" 
             }
+        
+    @staticmethod
+    async def delete_by_id(id: int):
+        try:
+            data = await BaseDeDatos.query("DELETE FROM items WHERE id = ?", (id,))
+            return data
+        except Exception as e:
+            return {
+                "status": False,
+                "data": None,
+                "mensaje": f"Error: {str(e)}" 
+            }

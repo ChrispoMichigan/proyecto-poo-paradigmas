@@ -58,3 +58,14 @@ class ControllerItems():
         item_create['mensaje'] = 'Producto creado correctamente'
 
         return item_create
+    
+    @staticmethod
+    async def delete_by_id(id: int):
+        data = await ControllerItems.get_by_id(id)
+        if not data['status']:
+            return data
+        data = await ModelItems.delete_by_id(id)
+        data['mensaje'] = f'Producto con el id {id} borrado exitosamente'
+        data['data'] = None
+        return data
+    

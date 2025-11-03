@@ -11,11 +11,13 @@ async def get_users(user_id: int):
 
 @items_router.get("/{id}")
 async def get_by_id(id: int):
-    return {}
+    data = ControllerItems.get_by_id(id)
+    return data
 
 @items_router.delete("/{id}")
 async def delete_by_id(id: int):
-    return {}
+    data = await ControllerItems.delete_by_id(id)
+    return data
 
 @items_router.post("/")
 async def create(item: ItemCreate):
