@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from schemes.customers import CustomerCreate
 from controllers.customers import ControllerCustomers
+
 customers_router = APIRouter()
 
 @customers_router.get("/{user_id}")
@@ -10,10 +11,10 @@ async def get_all(user_id: int):
 
 @customers_router.delete("/{id}")
 async def delete_by_id(id: int):
-
-    return {}
+    data = await ControllerCustomers.delete_by_id(id)
+    return data
 
 @customers_router.post("/")
 async def create(customer: CustomerCreate):
-    print()
-    return {}
+    data = await ControllerCustomers.create(customer)
+    return data

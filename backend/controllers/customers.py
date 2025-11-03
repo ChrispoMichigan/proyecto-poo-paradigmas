@@ -20,5 +20,8 @@ class ControllerCustomers():
     
     @staticmethod
     async def create(customer: CustomerCreate):
-
+        print(customer.user_id)
+        print(customer.first_name)
+        print(customer.last_name)
+        print(customer.dni)
         return {}
