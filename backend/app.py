@@ -13,6 +13,10 @@ app.include_router(users_router, prefix="/users", tags=["users"])
 # Rutas de clientes
 app.include_router(customers_router, prefix="/customers", tags=["customers"])
 
+# Rutas de productos
+
+app.include_router(customers_router, prefix="/customers", tags=["customers"])
+
 @app.get("/")
 async def root():
     return {
