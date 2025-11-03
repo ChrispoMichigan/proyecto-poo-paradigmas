@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from routes.users import users_router
 from routes.customers import customers_router
+from routes.items import items_router
 
 app = FastAPI()
 
@@ -14,8 +15,7 @@ app.include_router(users_router, prefix="/users", tags=["users"])
 app.include_router(customers_router, prefix="/customers", tags=["customers"])
 
 # Rutas de productos
-
-app.include_router(customers_router, prefix="/customers", tags=["customers"])
+app.include_router(items_router, prefix="/items", tags=["items"])
 
 @app.get("/")
 async def root():
