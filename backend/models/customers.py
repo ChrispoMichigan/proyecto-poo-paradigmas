@@ -38,3 +38,15 @@ class ModelCustomers():
                 "data": None,
                 "mensaje": f"Error: {str(e)}" 
             }
+    
+    @staticmethod
+    async def get_by_id(id: int):
+        try:
+            data = await BaseDeDatos.query("SELECT first_name, last_name, dni, created_at FROM customers WHERE id = ?", (id,))
+            return data
+        except Exception as e:
+            return {
+                "status": False,
+                "data": None,
+                "mensaje": f"Error: {str(e)}" 
+            }
