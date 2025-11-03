@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-
 class LoginWindow:
     def __init__(self, controller):
         self.controller = controller
-        self.window = None
+        self.window : tk.Tk
         
     def show(self):
         """Muestra la ventana de login"""
@@ -70,6 +69,10 @@ class LoginWindow:
         # Enlace para enter en los campos
         self.username_entry.bind('<Return>', lambda e: self.password_entry.focus())
         self.password_entry.bind('<Return>', lambda e: self._on_login())
+
+        # Campo de label
+        self.estado_label = ttk.Label(form_frame, text="", font=("Helvetica", 10))
+        self.estado_label.pack(anchor=tk.W, pady=(0, 5))
         
     def _on_login(self):
         """Maneja el evento de login"""

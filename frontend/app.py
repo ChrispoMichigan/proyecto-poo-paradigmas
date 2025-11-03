@@ -1,20 +1,35 @@
 import tkinter as tk
 from vista.login_window import LoginWindow
 from vista.main_window import MainWindow
+from models.users import ModelUsers
 #este archivo nomas lo hice para hacer pruebas 
 
 
 class Controller:
     """Controlador temporal para pruebas"""
     def __init__(self):
-        self.login_window = None
-        self.main_window = None
+        self.login_window : LoginWindow
+        self.main_window : MainWindow 
         
     def login(self, username, password):
-        print(f"Intento de login: {username}")
+
+        self.login_window.estado_label.config(text="Verificando credenciales...", foreground="blue")
+        self.login_window.window.update()  # Forzar actualización de la UI
+
+        data = ModelUsers.login(username, password)
+
         # login automatico por ahora
-        if username and password:
-            self.show_main_window()
+        if not data['status']:
+            # Mostrar error
+            self.login_window.estado_label.config(text=data['mensaje'], foreground="red")
+            return
+            
+        # Mostrar éxito
+        self.login_window.estado_label.config(text="Login exitoso", foreground="green")
+        self.login_window.window.update()
+        
+        # Esperar un momento antes de cambiar de ventana
+        self.login_window.window.after(1000, self.show_main_window)  # Esperar 1 segundo
             
     def show_main_window(self):
         if self.login_window:
