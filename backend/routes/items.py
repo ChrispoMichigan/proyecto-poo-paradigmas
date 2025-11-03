@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from controllers.items import ControllerItems
+from schemes.items import ItemCreate
 
 items_router = APIRouter()
 
@@ -17,6 +18,7 @@ async def delete_by_id(id: int):
     return {}
 
 @items_router.post("/")
-async def create():
-    return {}
+async def create(item: ItemCreate):
+    item_create = await ControllerItems.create(item)
+    return item_create
 
