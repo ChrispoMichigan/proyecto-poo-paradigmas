@@ -1,10 +1,10 @@
 
 
 from db import BaseDeDatos
-
+from schemes.customers import CustomerCreate
 class ModelCustomers():
     @staticmethod
-    async def get_all(user_id) -> dict:
+    async def get_all(user_id: int) -> dict:
         try:
             data = await BaseDeDatos.query("SELECT id, first_name, last_name, dni, created_at FROM customers WHERE user_id = ?", (user_id,))
             return data
@@ -26,12 +26,11 @@ class ModelCustomers():
                 "data": None,
                 "mensaje": f"Error: {str(e)}" 
             }
-        
 
     @staticmethod
-    async def create(first_name, last_name, dni):
+    async def create(customer: CustomerCreate):
         try:
-            customer_create = await BaseDeDatos.query('INSERT INTO customers(first_name, last_name, dni) values(?, ?, ?)', (first_name, last_name, dni,))
+            customer_create = await BaseDeDatos.query('INSERT INTO customers(user_id, first_name, last_name, dni) values(?, ?, ?, ?)', (customer.user_id, customer.first_name, customer.last_name, customer.dni,))
             return customer_create
         except Exception as e:
             return {
