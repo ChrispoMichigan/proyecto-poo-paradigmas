@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 
 from models.customers import ModelCustomers
+from models.items import ModelItems
+
 class MainWindow:
     def __init__(self, controller):
         self.controller = controller
@@ -18,6 +20,7 @@ class MainWindow:
         self._create_menu()
         self._create_widgets()
         self.load_clients_to_table(self.user_id)
+        self.load_articles_to_table(self.user_id)
         return self.window
         
     def _create_menu(self):
@@ -104,9 +107,9 @@ class MainWindow:
         #llamada borrar cliente
         self.delete_client_button = ttk.Button(action_frame,text="Eliminar Cliente Seleccionado",command=self.controller.delete_client)
         self.delete_client_button.pack(side=tk.LEFT)
-        #llamada consultar cliente
-        self.view_client_button = ttk.Button(action_frame,text="Consultar Cliente",command=self.controller.view_client)
-        self.view_client_button.pack(side=tk.LEFT, padx=(10, 0))
+        #!Borrar consultar cliente si no hace nada
+        #self.view_client_button = ttk.Button(action_frame,text="Consultar Cliente",command=self.controller.view_client)
+        #self.view_client_button.pack(side=tk.LEFT, padx=(10, 0))
         
     
     def clear_clients_table(self):
@@ -122,6 +125,8 @@ class MainWindow:
         data = ModelCustomers.get_all(self.user_id)
         if not data['status']:
             #! Aqui hacer algo en caso de error
+            print('Error')
+            print(data['mensaje'])
             return
         #print(data['data'])
 
@@ -217,7 +222,44 @@ class MainWindow:
         
         # Mostrar campos iniciales
         self._toggle_article_fields()
-        
+
+    def clear_articles_table(self):
+        """Limpia todas las filas de la tabla de clientes"""
+        for item in self.articles_tree.get_children():
+            self.articles_tree.delete(item)
+
+    def load_articles_to_table(self, articles_list):
+        """Carga una lista de clientes en la tabla"""
+        # Limpiar tabla primero
+        self.clear_articles_table()
+        #print(self.user_id)
+        data = ModelItems.get_all(self.user_id)
+        if not data['status']:
+            #! Aqui hacer algo en caso de error
+            print('Error')
+            print(data['mensaje'])
+            return
+        #print(data['data'])
+
+        # Agregar cada articulo
+        for article in data['data']:
+            if article['type'] == 'fisico':
+                details = ("Peso:",article['weight'])  # Si es fisico, mostrar el peso
+            elif article['type'] == 'digital':
+                details = ("licencia:",article['license'])  # Si es digital, mostrar la licencia
+            else:
+                details = 'N/A'  # Si no es ni fisico ni digital, dejar un valor por defecto
+
+            self.articles_tree.insert("", "end", values=(
+                article['id'],
+                article['code'],
+                article['denomination'], 
+                article['price'],
+                article['type'],
+                details     
+            ))
+
+
     def _create_invoices_tab(self):
         #pestaña de facturacion
         invoices_frame = ttk.Frame(self.notebook, padding=10)
@@ -342,14 +384,17 @@ class MainWindow:
         
     def get_article_data(self):
         #obtener datos del formulario de articulos (los que escribio el usuario)
-        return {
-            'tipo': self.article_type.get(),
-            'codigo': self.article_code_entry.get(),
-            'denominacion': self.article_name_entry.get(),
-            'precio': self.article_price_entry.get(),
-            'peso': self.article_weight_entry.get(),
-            'licencia': self.article_license_entry.get()
-        }
+        if self.article_type.get() == "fisico":
+            distiction=self.article_weight_entry.get()
+        else:
+            distiction=self.article_license_entry.get()
+        return [
+            self.article_type.get(),
+            self.article_code_entry.get(),
+            self.article_name_entry.get(),
+            self.article_price_entry.get(),
+            distiction
+        ]
         
     def get_invoice_line_data(self):
         #obtener datos del para lo de añadir lineas a la factura (los que escribio el usuario)
