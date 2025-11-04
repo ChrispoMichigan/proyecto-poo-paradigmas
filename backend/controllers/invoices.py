@@ -7,8 +7,10 @@ class ControllerInvoices():
     @staticmethod
     async def get_all(id_user: int):
         data = await ModelInvoices.get_all(id_user)
-        data['mensaje'] = f'{len(data['data'])} facturas obtenidos'
-
+        #data['mensaje'] = f'{len(data['data'])} facturas obtenidos'
+        if not data['status']:
+            return data
+        
         if len(data['data']) == 0:
             data['data'] = None
             return data
@@ -21,3 +23,28 @@ class ControllerInvoices():
             data['data'][i]['item'] = item['data']
 
         return data
+    
+    async def get_by_id(id: int):
+        data = await ModelInvoices.get_by_id(id)
+        
+        if not data['status']:
+            return data
+        
+        if len(data['data']) == 0:
+            data['status'] = False
+            data['mensaje'] = f'Factura con el id {id} no encontrado'
+            data['data'] = None
+            return data
+
+        data['mensaje'] = f'Factura encontrado con el id {id}'
+        return data
+    
+    @staticmethod
+    async def create(invoice: InvoiceCreate):
+        
+        data = await ModelInvoices.create(invoice)
+        print(data)
+
+        
+
+        return {}
