@@ -1,4 +1,11 @@
 import tkinter as tk
+# Importar tkinter.filedialog para el diálogo de guardado
+from tkinter import filedialog
+import json
+import csv
+from datetime import datetime
+
+
 from vista.login_window import LoginWindow
 from vista.main_window import MainWindow
 
@@ -236,7 +243,85 @@ class Controller:
             print(f"Error al eliminar factura: {str(e)}")
 
     def export_invoice(self, format): 
-        print(f"Exportar {format}")
+        """Exporta las facturas en formato JSON o CSV"""
+        try:
+            # Obtener las facturas del backend
+            data = ModelInvoices.get_all(self.user_id)
+            
+            if not data['status']:
+                print(f"Error al obtener facturas: {data.get('mensaje', 'Error desconocido')}")
+                return
+            
+            # Crear nombre de archivo por defecto con fecha
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            default_filename = f"facturas_{timestamp}"
+            
+            if format.lower() == 'json':
+                # Para JSON, guardar tal como viene
+                file_path = filedialog.asksaveasfilename(
+                    defaultextension=".json",
+                    filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+                    initialfile=f"{default_filename}.json"
+                )
+                
+                if file_path:
+                    with open(file_path, 'w', encoding='utf-8') as file:
+                        json.dump(data, file, indent=2, ensure_ascii=False)
+                    print(f"Facturas exportadas exitosamente a: {file_path}")
+                    
+            elif format.lower() == 'csv':
+                # Para CSV, aplanar la estructura
+                file_path = filedialog.asksaveasfilename(
+                    defaultextension=".csv",
+                    filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                    initialfile=f"{default_filename}.csv"
+                )
+                
+                if file_path:
+                    with open(file_path, 'w', newline='', encoding='utf-8') as file:
+                        writer = csv.writer(file)
+                        
+                        # Escribir encabezados
+                        headers = [
+                            'invoice_id', 'customer_id', 'item_id', 'amount', 'invoice_created_at',
+                            'customer_first_name', 'customer_last_name', 'customer_dni', 'customer_created_at',
+                            'item_code', 'item_type', 'item_denomination', 'item_price', 'item_weight', 'item_license', 'item_created_at'
+                        ]
+                        writer.writerow(headers)
+                        
+                        # Escribir datos
+                        for invoice in data['data']:
+                            customer = invoice['customer'][0]
+                            item = invoice['item'][0]
+                            
+                            # Manejar valores null para weight y license
+                            item_weight = item.get('weight', '') if item.get('weight') is not None else ''
+                            item_license = item.get('license', '') if item.get('license') is not None else ''
+                            
+                            row = [
+                                invoice['id'],
+                                invoice['customer_id'],
+                                invoice['item_id'],
+                                invoice['amount'],
+                                invoice['created_at'],
+                                customer['first_name'],
+                                customer['last_name'],
+                                customer['dni'],
+                                customer['created_at'],
+                                item['code'],
+                                item['type'],
+                                item['denomination'],
+                                item['price'],
+                                item_weight,
+                                item_license,
+                                item['created_at']
+                            ]
+                            writer.writerow(row)
+                    
+                    print(f"Facturas exportadas exitosamente a: {file_path}")
+            
+        except Exception as e:
+            print(f"Error al exportar facturas: {str(e)}")
 
 
 controller = Controller()
