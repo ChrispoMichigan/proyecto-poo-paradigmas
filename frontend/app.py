@@ -8,6 +8,8 @@ from models.customers import ModelCustomers
 from models.items import ModelItems
 from models.schemas.items import ItemCreate
 from models.schemas.items import ItemType
+from models.schemas.invoices import InvoiceCreate
+from models.invoices import ModelInvoices
 #este archivo nomas lo hice para hacer pruebas 
 
 
@@ -82,10 +84,13 @@ class Controller:
         #dni: str    
 
 
-    def delete_client(self): print("Eliminar cliente") 
+    def delete_client(self): 
+        print("Eliminar cliente") 
 
 
-    def view_client(self): print("Ver cliente")
+    def view_client(self): 
+        print("Ver cliente")
+
     def add_article(self): 
         print("Agregar artículo")
         #?when se te olvida que ya tenias funciones para sacar los datos del frontend
@@ -154,15 +159,27 @@ class Controller:
         print("Crear factura")
         datosFactura=[self.main_window.get_invoice_data()]
         print(datosFactura)
-        print(datosFactura[0]['article_id'])
+        print(self.user_id)
         """
         #?datosFactura recibe una lista con un diccionario 
         tiene los datos de 'client_id', 'article_id' y 'quantity'
-
         creo que solo necesitas el id cliente para la funcion de create invoice
         mientras que add_invoice necesitaria el id del articulo, la cantidad y la seleccion
 
         """
+        factura = InvoiceCreate(user_id=self.user_id, customer_id=datosFactura[0]['client_id'], item_id=datosFactura[0]['article_id'], amount=int(datosFactura[0]['quantity']))
+
+        factura_creada = ModelInvoices.create(factura)
+
+        if not factura_creada['status']:
+            print(f'Error: {factura_creada['mensaje']}')
+            return
+
+        print(factura_creada)
+        
+        # Recargar la tabla de facturas después de crear una nueva factura
+        self.main_window.load_invoices_to_table()
+
     def add_invoice_line(self): 
         print("Agregar línea")
         datosFactura=[self.main_window.get_invoice_data()]
@@ -173,8 +190,11 @@ class Controller:
         me acabo de dar cuenta que no entiendo que pide el documento
         exactamente con nueva factura y nueva linea
         """
-    def delete_invoice_line(self): print("Eliminar línea")
-    def export_invoice(self, format): print(f"Exportar {format}")
+    def delete_invoice_line(self): 
+        print("Eliminar línea")
+
+    def export_invoice(self, format): 
+        print(f"Exportar {format}")
 
 
 controller = Controller()

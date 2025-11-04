@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from models.customers import ModelCustomers
 from models.items import ModelItems
+from models.invoices import ModelInvoices
 
 class MainWindow:
     def __init__(self, controller):
@@ -261,6 +262,50 @@ class MainWindow:
                 details     
             ))
 
+    def load_invoices_to_table(self):
+        """Cargar facturas del usuario actual a la tabla"""
+        try:
+            # Limpiar tabla actual
+            for item in self.lines_tree.get_children():
+                self.lines_tree.delete(item)
+            
+            # Obtener facturas del backend
+            data = ModelInvoices.get_all(self.user_id)
+            
+            if not data['status']:
+                print(f"Error al cargar facturas: {data.get('mensaje', 'Error desconocido')}")
+                return
+            
+            total_general = 0.0
+            
+            # Agregar cada factura a la tabla
+            for invoice in data['data']:
+                # Extraer información del cliente (primer elemento de la lista)
+                customer_name = f"{invoice['customer'][0]['first_name']} {invoice['customer'][0]['last_name']}"
+                
+                # Extraer información del item (primer elemento de la lista)
+                item_info = invoice['item'][0]
+                item_name = item_info['denomination']
+                item_price = float(item_info['price']) if item_info['price'] else 0.0
+                
+                # Calcular subtotal
+                subtotal = item_price * invoice['amount']
+                total_general += subtotal
+                
+                # Insertar fila en la tabla
+                self.lines_tree.insert("", "end", values=(
+                    invoice['id'],
+                    f"{customer_name} - {item_name}",
+                    invoice['amount'],
+                    f"${item_price:.2f}",
+                    f"${subtotal:.2f}"
+                ))
+            
+            # Actualizar total
+            self.total_label.config(text=f"${total_general:.2f}")
+            
+        except Exception as e:
+            print(f"Error al cargar facturas: {str(e)}")
 
     def _create_invoices_tab(self):
         #pestaña de facturacion
@@ -317,6 +362,9 @@ class MainWindow:
         
         self.lines_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Cargar facturas al inicio
+        self.load_invoices_to_table()
         
         # Frame de totales y acciones
         total_frame = ttk.Frame(invoices_frame)
