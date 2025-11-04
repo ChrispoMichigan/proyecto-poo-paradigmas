@@ -213,16 +213,6 @@ class Controller:
         # Recargar la tabla de facturas después de crear una nueva factura
         self.main_window.load_invoices_to_table()
 
-    def add_invoice_line(self): 
-        print("Agregar línea")
-        datosFactura=[self.main_window.get_invoice_data()]
-        #usarias esto para obtener la seleccion de factura
-        #seleccion=self.main_window.get_invoice_select
-        
-        """
-        me acabo de dar cuenta que no entiendo que pide el documento
-        exactamente con nueva factura y nueva linea
-        """
     def delete_invoice_line(self): 
         """Elimina la factura seleccionada en la tabla"""
         # Obtener el ID de la factura seleccionada
