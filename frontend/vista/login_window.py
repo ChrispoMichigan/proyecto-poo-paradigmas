@@ -4,6 +4,7 @@ class LoginWindow:
     def __init__(self, controller):
         self.controller = controller
         self.window : tk.Tk
+        self.user_id: int = 0
         
     def show(self):
         """Muestra la ventana de login"""

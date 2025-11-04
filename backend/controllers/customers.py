@@ -25,6 +25,7 @@ class ControllerCustomers():
         data['data'] = None
         return data
     
+    @staticmethod
     async def get_by_id(id: int):
         data = await ModelCustomers.get_by_id(id)
         

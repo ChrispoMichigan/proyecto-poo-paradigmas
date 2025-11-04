@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 
+from models.customers import ModelCustomers
 class MainWindow:
     def __init__(self, controller):
         self.controller = controller
         self.window = None
         self.notebook = None
+        self.user_id: int = 0
         
     def show(self):
         #Muestra la ventana principal
@@ -15,6 +17,7 @@ class MainWindow:
         
         self._create_menu()
         self._create_widgets()
+        self.load_clients_to_table(self.user_id)
         return self.window
         
     def _create_menu(self):
@@ -105,6 +108,32 @@ class MainWindow:
         self.view_client_button = ttk.Button(action_frame,text="Consultar Cliente",command=self.controller.view_client)
         self.view_client_button.pack(side=tk.LEFT, padx=(10, 0))
         
+    
+    def clear_clients_table(self):
+        """Limpia todas las filas de la tabla de clientes"""
+        #for item in self.clients_tree.get_children():
+      
+
+    def load_clients_to_table(self, clients_list):
+        """Carga una lista de clientes en la tabla"""
+        # Limpiar tabla primero
+        self.clear_clients_table()
+        print(self.user_id)
+        data = ModelCustomers.get_all(self.user_id)
+        if not data['status']:
+            #! Aqui hacer algo en caso de error
+            return
+        print(data['data'])
+
+        # Agregar cada cliente
+        for client in data['data']:
+            self.clients_tree.insert("", "end", values=(
+                client['id'],
+                client['first_name'],
+                client['last_name'], 
+                client['dni']
+            ))
+
     def _create_articles_tab(self):
         #pestaña de articulos
         articles_frame = ttk.Frame(self.notebook, padding=10)
