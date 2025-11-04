@@ -337,13 +337,6 @@ class MainWindow:
         ttk.Label(line_frame, text="Cantidad:").grid(row=0, column=2, sticky=tk.W, padx=(0, 5), pady=5)
         self.line_quantity_entry = ttk.Entry(line_frame, width=10)
         self.line_quantity_entry.grid(row=0, column=3, padx=(0, 15), pady=5)
-        #llamada a la funcion para agrgar lineas a la factura actual
-        self.add_line_button = ttk.Button(
-            line_frame,
-            text="Agregar Linea",
-            command=self.controller.add_invoice_line
-        )
-        self.add_line_button.grid(row=0, column=4, padx=(10, 0))
         
         # Frame de lineas de factura
         lines_frame = ttk.LabelFrame(invoices_frame, text="Lineas de Factura", padding=10)
@@ -362,9 +355,6 @@ class MainWindow:
         
         self.lines_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        
-        # Cargar facturas al inicio
-        self.load_invoices_to_table()
         
         # Frame de totales y acciones
         total_frame = ttk.Frame(invoices_frame)
@@ -398,6 +388,11 @@ class MainWindow:
             command=lambda: self.controller.export_invoice('csv')
         )
         self.export_csv_button.pack(side=tk.LEFT)
+
+        # Cargar facturas al inicio
+        self.load_invoices_to_table()
+
+
     def load_clients_to_combobox(self):
         #cargar los clientes a la combobox
         clients_data = ModelCustomers.get_all(self.user_id)
