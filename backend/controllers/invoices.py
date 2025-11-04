@@ -45,6 +45,9 @@ class ControllerInvoices():
         data = await ModelInvoices.create(invoice)
         print(data)
 
+        if not data['status']:
+            return data
         
+        invoice_create = await ControllerInvoices.get_by_id(data['data']['last_insert_id'])
 
-        return {}
+        return invoice_create
