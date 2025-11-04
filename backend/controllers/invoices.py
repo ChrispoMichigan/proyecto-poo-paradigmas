@@ -54,7 +54,7 @@ class ControllerInvoices():
     
     @staticmethod
     async def delete_by_id(id: int):
-        data = await ControllerItems.get_by_id(id)
+        data = await ControllerInvoices.get_by_id(id)
         if not data['status']:
             return data
         data = await ModelInvoices.delete_by_id(id)

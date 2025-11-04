@@ -213,7 +213,27 @@ class Controller:
         exactamente con nueva factura y nueva linea
         """
     def delete_invoice_line(self): 
-        print("Eliminar línea")
+        """Elimina la factura seleccionada en la tabla"""
+        # Obtener el ID de la factura seleccionada
+        invoice_id = self.main_window.get_invoice_select()
+        
+        if invoice_id is None:
+            print("No hay factura seleccionada para eliminar")
+            return
+        
+        try:
+            # Llamar al modelo para eliminar la factura
+            result = ModelInvoices.delete_by_id(invoice_id)
+            
+            if result['status']:
+                print(f"Factura eliminada exitosamente: {result}")
+                # Recargar la tabla de facturas para mostrar los cambios
+                self.main_window.load_invoices_to_table()
+            else:
+                print(f"Error al eliminar factura: {result.get('mensaje', 'Error desconocido')}")
+                
+        except Exception as e:
+            print(f"Error al eliminar factura: {str(e)}")
 
     def export_invoice(self, format): 
         print(f"Exportar {format}")

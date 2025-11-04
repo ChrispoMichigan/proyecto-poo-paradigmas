@@ -524,13 +524,19 @@ class MainWindow:
         }
     
     def get_invoice_select(self):
+        """Obtiene el ID de la factura seleccionada en la tabla de facturas"""
         selected_items = self.lines_tree.selection()
         
         if selected_items:
-            #get the id and return that instead idk
-            return selected_items
+            # Obtener el primer item seleccionado
+            selected_item = selected_items[0]
+            # Obtener los valores de la fila seleccionada
+            invoice_data = self.lines_tree.item(selected_item, 'values')
+            # El ID está en la primera columna (índice 0)
+            return int(invoice_data[0]) if invoice_data else None
         else:
-            print("no item selected")
+            print("No hay factura seleccionada")
+            return None
     
     def get_selected_client_from_table(self):
         """Obtiene el ID del cliente seleccionado en la tabla de clientes"""
