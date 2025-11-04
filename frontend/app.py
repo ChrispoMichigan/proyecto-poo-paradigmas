@@ -83,6 +83,8 @@ class Controller:
             print(data['mensaje'])
             return
         self.main_window.load_clients_to_table(self.user_id)
+        # Actualizar también el combobox de clientes en facturación
+        self.main_window.load_clients_to_combobox()
         
 
         #user_id: int
@@ -181,6 +183,8 @@ class Controller:
         else:
             print("chingao")
         self.main_window.load_articles_to_table(self.user_id)
+        # Actualizar también el combobox de artículos en facturación
+        self.main_window.load_articles_to_combobox()
 
            
 
