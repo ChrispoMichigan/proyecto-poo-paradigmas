@@ -83,6 +83,8 @@ class Controller:
 
 
     def delete_client(self): print("Eliminar cliente") 
+
+
     def view_client(self): print("Ver cliente")
     def add_article(self): 
         print("Agregar artículo")
@@ -148,8 +150,29 @@ class Controller:
 
            
 
-    def create_invoice(self): print("Crear factura")
-    def add_invoice_line(self): print("Agregar línea")
+    def create_invoice(self): 
+        print("Crear factura")
+        datosFactura=[self.main_window.get_invoice_data()]
+        print(datosFactura)
+        print(datosFactura[0]['article_id'])
+        """
+        #?datosFactura recibe una lista con un diccionario 
+        tiene los datos de 'client_id', 'article_id' y 'quantity'
+
+        creo que solo necesitas el id cliente para la funcion de create invoice
+        mientras que add_invoice necesitaria el id del articulo, la cantidad y la seleccion
+
+        """
+    def add_invoice_line(self): 
+        print("Agregar línea")
+        datosFactura=[self.main_window.get_invoice_data()]
+        #usarias esto para obtener la seleccion de factura
+        #seleccion=self.main_window.get_invoice_select
+        
+        """
+        me acabo de dar cuenta que no entiendo que pide el documento
+        exactamente con nueva factura y nueva linea
+        """
     def delete_invoice_line(self): print("Eliminar línea")
     def export_invoice(self, format): print(f"Exportar {format}")
 

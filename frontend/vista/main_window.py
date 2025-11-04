@@ -21,6 +21,8 @@ class MainWindow:
         self._create_widgets()
         self.load_clients_to_table(self.user_id)
         self.load_articles_to_table(self.user_id)
+        self.load_articles_to_combobox()
+        self.load_clients_to_combobox()
         return self.window
         
     def _create_menu(self):
@@ -348,6 +350,70 @@ class MainWindow:
             command=lambda: self.controller.export_invoice('csv')
         )
         self.export_csv_button.pack(side=tk.LEFT)
+    def load_clients_to_combobox(self):
+        #cargar los clientes a la combobox
+        clients_data = ModelCustomers.get_all(self.user_id)
+        if not clients_data['status']:
+            print('Error al cargar los clientes')
+            print(clients_data['mensaje'])
+            return
+
+        # Limpiar la ComboBox antes de llenarla
+        self.invoice_client_combo.set('')  # Resetear el valor seleccionado
+        self.invoice_client_combo['values'] = []  # Limpiar los valores actuales
+
+        # Crear una lista de tuplas (ID, Nombre Completo)
+        clients = [(client['id'], f"{client['first_name']} {client['last_name']}") for client in clients_data['data']]
+        
+        # Establecer los valores en la ComboBox (solo nombres para el usuario )
+        self.invoice_client_combo['values'] = [client[1] for client in clients]
+        
+       
+        if clients:
+            self.invoice_client_combo.set(clients[0][1])  # primer cliente por defecto
+
+        # Guardar la lista completa de clientes para poder obtener el id despues
+        self.clients_list = clients
+
+    def load_articles_to_combobox(self):
+        #cargar articulos a la combobox
+        articles_data = ModelItems.get_all(self.user_id)
+        if not articles_data['status']:
+            print('Error al cargar los artículos')
+            print(articles_data['mensaje'])
+            return
+
+        # Limpiar la ComboBox antes de llenarla
+        self.line_article_combo.set('')  # Resetear el valor seleccionado
+        self.line_article_combo['values'] = []  # Limpiar los valores actuales
+
+        # Crear una lista de tuplas (ID, Denominacion y  Codigo)
+        articles = [(article['id'], f"{article['denomination']} ({article['code']})") for article in articles_data['data']]
+        
+        # Establecer los valores en la ComboBox (solo nombres para el usuario )
+        self.line_article_combo['values'] = [article[1] for article in articles]
+        
+        if articles:
+            self.line_article_combo.set(articles[0][1])  # primer articulo por defecto
+
+        # Guardar la lista completa de articulos para poder acceder al id
+        self.articles_list = articles
+
+
+    def get_selected_client_id(self):
+        #saca el id del cliente de la combobox en facturas
+        selected_client_name = self.invoice_client_combo.get()
+        # Buscar el ID correspondiente en la lista de clientes
+        selected_client = next((client for client in self.clients_list if client[1] == selected_client_name), None)
+        return selected_client[0] if selected_client else None
+    def get_selected_article_id(self):
+    #Sacar el id del articulo en la combobox de facturas
+        selected_article_name = self.line_article_combo.get()
+        # Buscar el ID correspondiente en la lista de artículos
+        selected_article = next((article for article in self.articles_list if article[1] == selected_article_name), None)
+        return selected_article[0] if selected_article else None
+
+
     """seccion de funciones que usa el frontend waos"""   
     def _toggle_article_fields(self):
         #esta es la cosa que muestra cosas distintas si es fisico o digital
@@ -396,13 +462,28 @@ class MainWindow:
             distiction
         ]
         
-    def get_invoice_line_data(self):
-        #obtener datos del para lo de añadir lineas a la factura (los que escribio el usuario)
+    def get_invoice_data(self):
+        #obtiene los datos para crear una factura
+        client_id = self.get_selected_client_id()  # Obtén el ID del cliente seleccionado
+        article_id = self.get_selected_article_id()  # Obtén el ID del artículo seleccionado
+        quantity = self.line_quantity_entry.get()  # Obtén la cantidad del artículo ingresada
+
+        # Devuelve todos los datos de la factura 
         return {
-            'articulo': self.line_article_combo.get(),
-            'cantidad': self.line_quantity_entry.get()
+            'client_id': client_id,
+            'article_id': article_id,
+            'quantity': quantity
         }
+    
+    def get_invoice_select(self):
+        selected_items = self.lines_tree.selection()
         
+        if selected_items:
+            #get the id and return that instead idk
+            return selected_items
+        else:
+            print("no item selected")
+            
     def update_total(self, total: float):
         #actualiza el total
         self.total_label.config(text=f"${total:.2f}")
