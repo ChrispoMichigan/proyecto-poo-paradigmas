@@ -37,3 +37,15 @@ class ModelInvoices():
                 "data": None,
                 "mensaje": f"Error: {str(e)}" 
             }
+        
+    @staticmethod
+    async def delete_by_id(id: int):
+        try:
+            data = await BaseDeDatos.query("DELETE FROM invoices WHERE id = ?", (id,))
+            return data
+        except Exception as e:
+            return {
+                "status": False,
+                "data": None,
+                "mensaje": f"Error: {str(e)}" 
+            }

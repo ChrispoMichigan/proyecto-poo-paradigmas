@@ -51,3 +51,15 @@ class ControllerInvoices():
         invoice_create = await ControllerInvoices.get_by_id(data['data']['last_insert_id'])
 
         return invoice_create
+    
+    @staticmethod
+    async def delete_by_id(id: int):
+        data = await ControllerItems.get_by_id(id)
+        if not data['status']:
+            return data
+        data = await ModelInvoices.delete_by_id(id)
+        if not data['status']:
+            return data
+        data['mensaje'] = f'Factura con el id {id} borrado exitosamente'
+        data['data'] = None
+        return data

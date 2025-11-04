@@ -16,13 +16,10 @@ async def get_by_id(id: int):
 
 @invoices_router.delete("/{id}")
 async def delete_by_id(id: int):
-    return {}
+    data = await ControllerInvoices.delete_by_id(id)
+    return data
 
 @invoices_router.post("/")
 async def create(invoice: InvoiceCreate):
     data = await ControllerInvoices.create(invoice)
-
-    if not data['status']:
-        return data
-
     return data
