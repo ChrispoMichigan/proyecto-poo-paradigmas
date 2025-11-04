@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from routes.users import users_router
 from routes.customers import customers_router
 from routes.items import items_router
+from routes.invoices import invoices_router
 
 app = FastAPI()
 
@@ -16,6 +17,9 @@ app.include_router(customers_router, prefix="/customers", tags=["customers"])
 
 # Rutas de productos
 app.include_router(items_router, prefix="/items", tags=["items"])
+
+# Rutas de facturas
+app.include_router(invoices_router, prefix="/invoices", tags=["invoices"])
 
 @app.get("/")
 async def root():
