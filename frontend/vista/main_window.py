@@ -531,6 +531,21 @@ class MainWindow:
             return selected_items
         else:
             print("no item selected")
+    
+    def get_selected_client_from_table(self):
+        """Obtiene el ID del cliente seleccionado en la tabla de clientes"""
+        selected_items = self.clients_tree.selection()
+        
+        if selected_items:
+            # Obtener el primer item seleccionado
+            selected_item = selected_items[0]
+            # Obtener los valores de la fila seleccionada
+            client_data = self.clients_tree.item(selected_item, 'values')
+            # El ID está en la primera columna (índice 0)
+            return int(client_data[0]) if client_data else None
+        else:
+            print("No hay cliente seleccionado")
+            return None
             
     def update_total(self, total: float):
         #actualiza el total

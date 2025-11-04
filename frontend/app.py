@@ -85,7 +85,29 @@ class Controller:
 
 
     def delete_client(self): 
-        print("Eliminar cliente") 
+        """Elimina el cliente seleccionado en la tabla"""
+        # Obtener el ID del cliente seleccionado
+        client_id = self.main_window.get_selected_client_from_table()
+        
+        if client_id is None:
+            print("No hay cliente seleccionado para eliminar")
+            return
+        
+        try:
+            # Llamar al modelo para eliminar el cliente
+            result = ModelCustomers.delete_by_id(client_id)
+            
+            if result['status']:
+                print(f"Cliente eliminado exitosamente: {result}")
+                # Recargar la tabla de clientes para mostrar los cambios
+                self.main_window.load_clients_to_table(self.user_id)
+                # Recargar también el combobox de clientes en facturación
+                self.main_window.load_clients_to_combobox()
+            else:
+                print(f"Error al eliminar cliente: {result['mensaje']}")
+                
+        except Exception as e:
+            print(f"Error al eliminar cliente: {str(e)}") 
 
 
     def view_client(self): 
