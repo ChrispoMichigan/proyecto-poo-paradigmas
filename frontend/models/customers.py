@@ -14,7 +14,7 @@ class ModelCustomers():
 
             response = requests.post(
                 f"{backend_url}/customers",
-                json=customer,
+                json=customer.model_dump(mode="json"),
                 headers={
                     "Content-Type": "application/json"
                 }

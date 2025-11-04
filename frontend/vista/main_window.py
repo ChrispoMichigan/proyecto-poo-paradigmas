@@ -111,19 +111,19 @@ class MainWindow:
     
     def clear_clients_table(self):
         """Limpia todas las filas de la tabla de clientes"""
-        #for item in self.clients_tree.get_children():
-      
+        for item in self.clients_tree.get_children():
+            self.clients_tree.delete(item)
 
     def load_clients_to_table(self, clients_list):
         """Carga una lista de clientes en la tabla"""
         # Limpiar tabla primero
         self.clear_clients_table()
-        print(self.user_id)
+        #print(self.user_id)
         data = ModelCustomers.get_all(self.user_id)
         if not data['status']:
             #! Aqui hacer algo en caso de error
             return
-        print(data['data'])
+        #print(data['data'])
 
         # Agregar cada cliente
         for client in data['data']:

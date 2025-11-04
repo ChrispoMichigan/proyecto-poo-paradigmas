@@ -57,15 +57,22 @@ class Controller:
     def add_client(self): 
         print("Agregar cliente")
         print(self.user_id)
+        temp_firstname=self.main_window.client_name_entry.get()
+        temp_lastname=self.main_window.client_lastname_entry.get()
+        temp_dni=self.main_window.client_dni_entry.get()
+        #print(temp_firstname,temp_lastname,temp_dni)
         
-        customer = CustomerCreate(user_id=self.user_id, first_name="Rene", last_name="coca", dni="ASGUW1234")
+        customer = CustomerCreate(user_id=self.user_id, first_name=temp_firstname, last_name=temp_lastname, dni=temp_dni)
         data = ModelCustomers.create(customer)
+        #print(data)
         if not data['status']:
             # En caso de error
             print('Hubo un error')
             print(data['mensaje'])
             return
+        self.main_window.load_clients_to_table(self.user_id)
         
+
         #user_id: int
         #first_name: str
         #last_name: str
