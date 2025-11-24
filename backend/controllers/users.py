@@ -1,6 +1,8 @@
 
 
 from models.users import ModelUsers
+from schemes.user import UserData
+
 
 class ControllerUsers():
     @staticmethod
@@ -36,7 +38,7 @@ class ControllerUsers():
         return data
 
     @staticmethod
-    async def create(user_data: dict):
+    async def create(user_data: UserData):
         if not 'username' in user_data.keys():
             return {
                 "status": False,
@@ -51,7 +53,7 @@ class ControllerUsers():
                 "mensaje": "Se requiere el campo password"
             }
 
-        found_user = await ModelUsers.get_by_username(user_data['username'])
+        found_user = await ModelUsers.get_by_username(user_data.username)
         if not len(found_user['data']) == 0:
             return {
                 "status": False,
@@ -59,7 +61,7 @@ class ControllerUsers():
                 "mensaje": "Nombre de usuario no disponible"
             }
         
-        data = await ModelUsers.create(user_data['username'], user_data['password'])
+        data = await ModelUsers.create(user_data.username, user_data.password)
         
         user_create = await ModelUsers.get_by_id(data['data']['last_insert_id'])
         user_create['mensaje'] = 'Usuario creado correctamente'
@@ -67,8 +69,8 @@ class ControllerUsers():
     
     
     @staticmethod
-    async def login(user_data: dict):
-        found_user = await ModelUsers.get_by_username(user_data['username'])
+    async def login(user_data: UserData):
+        found_user = await ModelUsers.get_by_username(user_data.username)
         
         if len(found_user['data']) == 0:
             return {
@@ -77,7 +79,7 @@ class ControllerUsers():
                 "mensaje": "Usuario no encontrado"
             }
         
-        if found_user['data'][0]['password'] != user_data['password']:
+        if found_user['data'][0]['password'] != user_data.password:
             return {
                 "status": False,
                 "data": None,

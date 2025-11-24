@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from controllers.users import ControllerUsers
+from schemes.user import UserData
 
 users_router = APIRouter()
 
@@ -20,11 +21,11 @@ async def delete_by_id(id: int):
     return data
 
 @users_router.post("/")
-async def create(user_data: dict):
+async def create(user_data: UserData):
     data = await ControllerUsers.create(user_data)
     return data
 
 @users_router.post("/login")
-async def login(user_data: dict):
+async def login(user_data: UserData):
     data = await ControllerUsers.login(user_data)
     return data

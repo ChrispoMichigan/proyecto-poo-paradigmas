@@ -1,6 +1,7 @@
 
 
 from db import BaseDeDatos
+from schemes.user import UserData
 
 class ModelUsers():
     @staticmethod
@@ -42,9 +43,9 @@ class ModelUsers():
         
 
     @staticmethod
-    async def create(username, password):
+    async def create(user_data: UserData):
         try:
-            user_create = await BaseDeDatos.query('INSERT INTO users(username, password) values(?, ?)', (username, password,))
+            user_create = await BaseDeDatos.query('INSERT INTO users(username, password) values(?, ?)', (user_data.username , user_data.password))
             return user_create
         except Exception as e:
             return {
